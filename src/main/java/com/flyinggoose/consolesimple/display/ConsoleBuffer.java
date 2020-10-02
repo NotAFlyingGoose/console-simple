@@ -7,28 +7,28 @@ import java.util.Set;
 
 public class ConsoleBuffer {
     final Console console;
-    Set<ConsoleCharacter> buffer = new HashSet<>();
+    Set<ConsoleCell> buffer = new HashSet<>();
 
     public ConsoleBuffer(Console console) {
         this.console = console;
     }
 
     public void flush() {
-        for (ConsoleCharacter c : buffer) {
-            this.console.setCharAt(c.getPos(), c.getTextCharacter().getCharacter());
+        for (ConsoleCell c : buffer) {
+            this.console.setCharAt(c.getPos(), c.getTextCharacter());
             this.console.setBackgroundAt(c.getPos(), c.getBackground());
             this.console.setForegroundAt(c.getPos(), c.getForeground());
         }
         buffer.clear();
     }
 
-    public void push(ConsoleCharacter character) {
+    public void push(ConsoleCell character) {
         buffer.removeIf(c -> c.getPos().equals(character.getPos()));
         buffer.add(character);
     }
 
-    public ConsoleCharacter get(ConsolePosition position) {
-        for (ConsoleCharacter c : buffer) {
+    public ConsoleCell get(ConsolePosition position) {
+        for (ConsoleCell c : buffer) {
             if (c.getPos().equals(position)) return c;
         }
         return null;

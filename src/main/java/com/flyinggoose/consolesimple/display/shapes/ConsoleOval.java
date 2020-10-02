@@ -1,6 +1,7 @@
 package com.flyinggoose.consolesimple.display.shapes;
 
 import com.flyinggoose.consolesimple.display.ConsolePosition;
+import com.flyinggoose.consolesimple.utils.TextCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,9 @@ public class ConsoleOval implements ConsoleShape {
     private ConsolePosition pos;
     private double width;
     private double height;
-    private char fill;
+    private TextCharacter fill;
 
-    public ConsoleOval(ConsolePosition pos, int width, int height, char fill) {
+    public ConsoleOval(ConsolePosition pos, int width, int height, TextCharacter fill) {
         this.pos = pos;
         this.width = width;
         this.height = height;
@@ -90,11 +91,11 @@ public class ConsoleOval implements ConsoleShape {
         this.height = height;
     }
 
-    public char getFill() {
+    public TextCharacter getFill() {
         return fill;
     }
 
-    public void setFill(char fill) {
+    public void setFill(TextCharacter fill) {
         this.fill = fill;
     }
 }

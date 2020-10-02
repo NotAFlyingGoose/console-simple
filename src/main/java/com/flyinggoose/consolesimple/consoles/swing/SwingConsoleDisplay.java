@@ -1,6 +1,6 @@
 package com.flyinggoose.consolesimple.consoles.swing;
 
-import com.flyinggoose.consolesimple.display.ConsoleCharacter;
+import com.flyinggoose.consolesimple.display.ConsoleCell;
 
 import java.awt.*;
 import java.util.List;
@@ -34,13 +34,13 @@ public class SwingConsoleDisplay extends SwingDisplay {
         g2d.fillRect(0, 0, getWidth() * 2, getHeight() * 2);
 
         // ready for drawing
-        for (List<ConsoleCharacter> row : console.rows) {
-            for (ConsoleCharacter cc : row) {
+        for (List<ConsoleCell> row : console.rows) {
+            for (ConsoleCell cc : row) {
                 Font charFont = fontConfig.getFontForCharacter(cc.getTextCharacter());
                 g2d.setFont(charFont);
-                g2d.setColor(cc.getBackground());
+                g2d.setColor(new Color(cc.getBackground().toRGB().getRed(), cc.getBackground().toRGB().getGreen(), cc.getBackground().toRGB().getBlue()));
                 g2d.fillRect(cc.getPos().getX() * cellWidth, cc.getPos().getY() * cellHeight, cellWidth, cellHeight);
-                g2d.setColor(cc.getForeground());
+                g2d.setColor(new Color(cc.getForeground().toRGB().getRed(), cc.getForeground().toRGB().getGreen(), cc.getForeground().toRGB().getBlue()));
                 g2d.drawString(String.valueOf(cc.getTextCharacter().getCharacter()), cc.getPos().getX() * cellWidth, (cc.getPos().getY() * cellHeight) + getFontMetrics(charFont).getAscent());
             }
         }

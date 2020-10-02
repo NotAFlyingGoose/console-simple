@@ -1,5 +1,6 @@
 package com.flyinggoose.consolesimple.display;
 
+import com.flyinggoose.consolesimple.utils.CharColor;
 import com.flyinggoose.consolesimple.utils.TextCharacter;
 import com.flyinggoose.consolesimple.consoles.Console;
 import com.flyinggoose.consolesimple.display.shapes.ConsoleLine;
@@ -7,32 +8,32 @@ import com.flyinggoose.consolesimple.display.shapes.ConsoleRectangle;
 import com.flyinggoose.consolesimple.display.shapes.ConsoleShape;
 import com.flyinggoose.consolesimple.display.shapes.ConsoleShapePoint;
 
-import java.awt.*;
+import java.util.Objects;
 
 public class ConsoleGraphics {
     private final Console console;
     private final ConsoleBuffer buffer;
-    private Color backgroundColor = null;
-    private Color foregroundColor = null;
+    private CharColor backgroundColor = null;
+    private CharColor foregroundColor = null;
 
     public ConsoleGraphics(Console console) {
         this.console = console;
         this.buffer = new ConsoleBuffer(console);
     }
 
-    public Color getBackgroundColor() {
+    public CharColor getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    public void setBackgroundColor(CharColor backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
-    public Color getForegroundColor() {
+    public CharColor getForegroundColor() {
         return foregroundColor;
     }
 
-    public void setForegroundColor(Color foregroundColor) {
+    public void setForegroundColor(CharColor foregroundColor) {
         this.foregroundColor = foregroundColor;
     }
 
@@ -45,7 +46,7 @@ public class ConsoleGraphics {
                 default -> {
                     // create character
                     TextCharacter tc = new TextCharacter(c, false, false);
-                    ConsoleCharacter character = new ConsoleCharacter(tc, hand);
+                    ConsoleCell character = new ConsoleCell(tc, hand);
 
                     //set color
                     color(character);
@@ -63,21 +64,21 @@ public class ConsoleGraphics {
         return hand;
     }
 
-    public void drawRectangle(ConsolePosition pos, int width, int height, char c) {
+    public void drawRectangle(ConsolePosition pos, int width, int height, TextCharacter c) {
         draw(new ConsoleRectangle.Basic(pos, width, height, c));
     }
 
-    public void fillRectangle(ConsolePosition pos, int width, int height, char c) {
+    public void fillRectangle(ConsolePosition pos, int width, int height, TextCharacter c) {
         fill(new ConsoleRectangle.Basic(pos, width, height, c));
     }
 
-    public void drawChar(ConsolePosition pos, char c) {
-        ConsoleCharacter drawChar = new ConsoleCharacter(new TextCharacter(c, false, false), pos);
+    public void drawChar(ConsolePosition pos, TextCharacter c) {
+        ConsoleCell drawChar = new ConsoleCell(c, pos);
         color(drawChar);
         buffer.push(drawChar);
     }
 
-    public void drawLine(ConsolePosition start, ConsolePosition end, char c) {
+    public void drawLine(ConsolePosition start, ConsolePosition end, TextCharacter c) {
         draw(new ConsoleLine(start, end, c));
     }
 
@@ -93,11 +94,9 @@ public class ConsoleGraphics {
         }
     }
 
-    public void color(ConsoleCharacter character) {
-        if (foregroundColor != null) character.setForeground(foregroundColor);
-        else character.setForeground(Color.WHITE);
-        if (backgroundColor != null) character.setBackground(backgroundColor);
-        else character.setBackground(Color.BLACK);
+    public void color(ConsoleCell character) {
+        character.setForeground(Objects.requireNonNullElse(foregroundColor, CharColor.ANSI.WHITE));
+        character.setBackground(Objects.requireNonNullElse(backgroundColor, CharColor.ANSI.BLACK));
     }
 
     public void flush() {

@@ -1,8 +1,10 @@
 package com.flyinggoose.consolesimple.consoles.swing;
 
+import com.flyinggoose.consolesimple.display.ConsoleGraphics;
+import com.flyinggoose.consolesimple.utils.CharColor;
 import com.flyinggoose.consolesimple.utils.TextCharacter;
 import com.flyinggoose.consolesimple.consoles.Console;
-import com.flyinggoose.consolesimple.display.ConsoleCharacter;
+import com.flyinggoose.consolesimple.display.ConsoleCell;
 import com.flyinggoose.consolesimple.display.ConsolePosition;
 import com.flyinggoose.consolesimple.display.ConsoleSize;
 
@@ -15,10 +17,11 @@ import java.util.List;
 public class SwingConsole extends Canvas implements Console {
     private final SwingConsoleDisplay display;
     SwingConsoleFontConfig fontConfig;
-    List<List<ConsoleCharacter>> rows = new LinkedList<>();
+    List<List<ConsoleCell>> rows = new LinkedList<>();
     private boolean running = false;
     private ConsoleSize consoleSize = new ConsoleSize(10, 10);
     private ConsolePosition lastEdit = new ConsolePosition(0, 0);
+    private final ConsoleGraphics graphics;
 
     public SwingConsole(String title) {
         this(title, new ConsoleSize(15, 15));
@@ -44,6 +47,8 @@ public class SwingConsole extends Canvas implements Console {
                 }
             }
         });
+
+        this.graphics = new ConsoleGraphics(this);
     }
 
     @Override
@@ -61,16 +66,16 @@ public class SwingConsole extends Canvas implements Console {
     private void updateChars() {
         consoleSize = new ConsoleSize((int) Math.floor(this.display.getWindow().getWidth() / (double) display.cellWidth) - 1, (int) Math.floor(this.display.getWindow().getHeight() / (double) display.cellHeight) - 1);
 
-        List<List<ConsoleCharacter>> newChars = new LinkedList<>();
+        List<List<ConsoleCell>> newChars = new LinkedList<>();
         for (int y = 0; y < consoleSize.getHeight(); y++) {
-            List<ConsoleCharacter> row = new LinkedList<>();
+            List<ConsoleCell> row = new LinkedList<>();
             for (int x = 0; x < consoleSize.getWidth(); x++) {
-                ConsoleCharacter cc;
+                ConsoleCell cc;
 
                 try {
                     cc = rows.get(y).get(x);
                 } catch (IndexOutOfBoundsException e) {
-                    cc = new ConsoleCharacter(new TextCharacter(' ', false, false), new ConsolePosition(x, y));
+                    cc = new ConsoleCell(new TextCharacter(' ', false, false), new ConsolePosition(x, y));
                 }
 
                 row.add(cc);
@@ -83,54 +88,54 @@ public class SwingConsole extends Canvas implements Console {
 
     @Override
     public void resetCharAt(ConsolePosition pos) {
-        if (getConsoleSize().isValid(pos)) setCharAt(pos, ' ');
+        if (getConsoleSize().isValid(pos)) setCharAt(pos, new TextCharacter(' ', false, false));
     }
 
     @Override
     public void resetBackgroundAt(ConsolePosition pos) {
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setBackground(Color.BLACK);
+        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setBackground(CharColor.ANSI.BLACK);
     }
 
     @Override
     public void resetForegroundAt(ConsolePosition pos) {
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setForeground(Color.WHITE);
+        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setForeground(CharColor.ANSI.WHITE);
     }
 
     @Override
-    public void setCharAt(ConsolePosition pos, char c) {
+    public void setCharAt(ConsolePosition pos, TextCharacter c) {
         if (getConsoleSize().isValid(pos)) {
             this.lastEdit = pos;
-            rows.get(pos.getY()).get(pos.getX()).setTextCharacter(new TextCharacter(c, false, false));
+            rows.get(pos.getY()).get(pos.getX()).setTextCharacter(c);
         }
     }
 
     @Override
-    public void setBackgroundAt(ConsolePosition pos, Color c) {
+    public void setBackgroundAt(ConsolePosition pos, CharColor c) {
         if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setBackground(c);
     }
 
     @Override
-    public void setForegroundAt(ConsolePosition pos, Color c) {
+    public void setForegroundAt(ConsolePosition pos, CharColor c) {
         if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setForeground(c);
     }
 
     @Override
-    public char getCharAt(ConsolePosition pos) {
+    public TextCharacter getCharAt(ConsolePosition pos) {
         if (getConsoleSize().isValid(pos))
-            return rows.get(pos.getY()).get(pos.getX()).getTextCharacter().getCharacter();
-        return ' ';
+            return rows.get(pos.getY()).get(pos.getX()).getTextCharacter();
+        return new TextCharacter(' ', false, false);
     }
 
     @Override
-    public Color getBackgroundAt(ConsolePosition pos) {
+    public CharColor getBackgroundAt(ConsolePosition pos) {
         if (getConsoleSize().isValid(pos)) return rows.get(pos.getY()).get(pos.getX()).getBackground();
-        return Color.BLACK;
+        return CharColor.ANSI.BLACK;
     }
 
     @Override
-    public Color getForegroundAt(ConsolePosition pos) {
+    public CharColor getForegroundAt(ConsolePosition pos) {
         if (getConsoleSize().isValid(pos)) return rows.get(pos.getY()).get(pos.getX()).getForeground();
-        return Color.WHITE;
+        return CharColor.ANSI.WHITE;
     }
 
     @Override
@@ -180,5 +185,10 @@ public class SwingConsole extends Canvas implements Console {
     @Override
     public boolean isPressing(int key) {
         return display.getKeyboard().isKeyDown(key);
+    }
+
+    @Override
+    public ConsoleGraphics getConsoleGraphics() {
+        return graphics;
     }
 }

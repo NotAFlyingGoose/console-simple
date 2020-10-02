@@ -1,6 +1,7 @@
 package com.flyinggoose.consolesimple.display.shapes;
 
 import com.flyinggoose.consolesimple.display.ConsolePosition;
+import com.flyinggoose.consolesimple.utils.TextCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +9,12 @@ import java.util.List;
 public class ConsoleLine implements ConsoleShape {
     private ConsolePosition start;
     private ConsolePosition end;
-    private char c;
+    private TextCharacter c;
 
-    public ConsoleLine(ConsolePosition start, ConsolePosition end, char c) {
+    public ConsoleLine(ConsolePosition start, ConsolePosition end, TextCharacter fill) {
         this.start = start;
         this.end = end;
-        this.c = c;
+        this.c = fill;
     }
 
     private static double lerp(double start, double end, double t) {
@@ -30,7 +31,7 @@ public class ConsoleLine implements ConsoleShape {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    private static List<ConsoleShapePoint> createPoints(ConsolePosition p0, ConsolePosition p1, char c) {
+    private static List<ConsoleShapePoint> createPoints(ConsolePosition p0, ConsolePosition p1, TextCharacter c) {
         List<ConsoleShapePoint> points = new ArrayList<>();
         var N = diagonalDistance(p0, p1);
         for (int step = 0; step <= N; step++) {
@@ -66,11 +67,11 @@ public class ConsoleLine implements ConsoleShape {
         this.end = end;
     }
 
-    public char getC() {
+    public TextCharacter getFill() {
         return c;
     }
 
-    public void setC(char c) {
+    public void setFill(TextCharacter c) {
         this.c = c;
     }
 }

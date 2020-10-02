@@ -1,12 +1,13 @@
 package com.flyinggoose.consolesimple.display.shapes;
 
 import com.flyinggoose.consolesimple.display.ConsolePosition;
+import com.flyinggoose.consolesimple.utils.TextCharacter;
 
 public class ConsoleShapePoint {
     public final ConsolePosition position;
-    public final char c;
+    public final TextCharacter c;
 
-    public ConsoleShapePoint(ConsolePosition position, char c) {
+    public ConsoleShapePoint(ConsolePosition position, TextCharacter c) {
         this.position = position;
         this.c = c;
     }
@@ -15,7 +16,7 @@ public class ConsoleShapePoint {
         return position;
     }
 
-    public char getChar() {
+    public TextCharacter getChar() {
         return c;
     }
 }

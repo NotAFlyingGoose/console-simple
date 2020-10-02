@@ -1,9 +1,10 @@
 package com.flyinggoose.consolesimple.consoles;
 
+import com.flyinggoose.consolesimple.display.ConsoleGraphics;
 import com.flyinggoose.consolesimple.display.ConsolePosition;
 import com.flyinggoose.consolesimple.display.ConsoleSize;
-
-import java.awt.*;
+import com.flyinggoose.consolesimple.utils.CharColor;
+import com.flyinggoose.consolesimple.utils.TextCharacter;
 
 public interface Console {
 
@@ -36,7 +37,7 @@ public interface Console {
      * @param pos point to set the character at.
      * @param c   character to change the point to.
      */
-    void setCharAt(ConsolePosition pos, char c);
+    void setCharAt(ConsolePosition pos, TextCharacter c);
 
     /**
      * set the background color at a certain point on the console.
@@ -44,7 +45,7 @@ public interface Console {
      * @param pos point to set the background at.
      * @param c   color to change the background to.
      */
-    void setBackgroundAt(ConsolePosition pos, Color c);
+    void setBackgroundAt(ConsolePosition pos, CharColor c);
 
     /**
      * set the text color at a certain point on the console.
@@ -52,7 +53,7 @@ public interface Console {
      * @param pos point to set the foreground at.
      * @param c   color to change the foreground to.
      */
-    void setForegroundAt(ConsolePosition pos, Color c);
+    void setForegroundAt(ConsolePosition pos, CharColor c);
 
     /**
      * gets the character at a certain point on the console.
@@ -60,7 +61,7 @@ public interface Console {
      * @param pos point to get the character from.
      * @return character at pos.
      */
-    char getCharAt(ConsolePosition pos);
+    TextCharacter getCharAt(ConsolePosition pos);
 
     /**
      * gets the color of the background at a certain point on the console.
@@ -68,7 +69,7 @@ public interface Console {
      * @param pos point to get the color from.
      * @return Color of the background at pos.
      */
-    Color getBackgroundAt(ConsolePosition pos);
+    CharColor getBackgroundAt(ConsolePosition pos);
 
     /**
      * gets the color of text at a certain point on the console.
@@ -76,13 +77,13 @@ public interface Console {
      * @param pos point to get the color from.
      * @return Color of the foreground at pos.
      */
-    Color getForegroundAt(ConsolePosition pos);
+    CharColor getForegroundAt(ConsolePosition pos);
 
     /**
      * gets the last point at witch the console was edited.
      * This position is changed every time the Console.setCharAt() method is called.
      *
-     * @see #setCharAt(ConsolePosition, char);
+     * @see #setCharAt(ConsolePosition, TextCharacter);
      * @return ConsolePosition of the last edit.
      */
     ConsolePosition getLastEdit();
@@ -155,5 +156,12 @@ public interface Console {
      * @return boolean is the key being pressed
      */
     boolean isPressing(int key);
+
+    /**
+     * gets a ConsoleGraphics instance to use for this console
+     *
+     * @return ConsoleGraphics for drawing
+     */
+    ConsoleGraphics getConsoleGraphics();
 
 }

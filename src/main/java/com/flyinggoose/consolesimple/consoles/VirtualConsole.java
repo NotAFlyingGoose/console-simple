@@ -1,34 +1,40 @@
 package com.flyinggoose.consolesimple.consoles;
 
+import com.flyinggoose.consolesimple.display.ConsoleGraphics;
+import com.flyinggoose.consolesimple.utils.CharColor;
 import com.flyinggoose.consolesimple.utils.TextCharacter;
-import com.flyinggoose.consolesimple.display.ConsoleCharacter;
+import com.flyinggoose.consolesimple.display.ConsoleCell;
 import com.flyinggoose.consolesimple.display.ConsolePosition;
 import com.flyinggoose.consolesimple.display.ConsoleSize;
 
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class VirtualConsole implements Console {
-    private boolean running = false;
-    private boolean stopped = false;
-    private ConsoleSize consoleSize = new ConsoleSize(10, 10);
-    private List<List<ConsoleCharacter>> rows = new LinkedList<>();
-    private ConsolePosition lastEdit = new ConsolePosition(0, 0);
+    protected boolean running = false;
+    protected boolean stopped = false;
+    protected ConsoleSize consoleSize = new ConsoleSize(10, 10);
+    protected List<List<ConsoleCell>> rows = new LinkedList<>();
+    protected ConsolePosition lastEdit = new ConsolePosition(0, 0);
+    private final ConsoleGraphics graphics;
 
-    private void updateChars() {
+    public VirtualConsole() {
+        this.graphics = new ConsoleGraphics(this);
+    }
+
+    protected void updateChars() {
         if (!running) return;
 
-        List<List<ConsoleCharacter>> newChars = new LinkedList<>();
+        List<List<ConsoleCell>> newChars = new LinkedList<>();
         for (int y = 0; y < consoleSize.getHeight(); y++) {
-            List<ConsoleCharacter> row = new LinkedList<>();
+            List<ConsoleCell> row = new LinkedList<>();
             for (int x = 0; x < consoleSize.getWidth(); x++) {
-                ConsoleCharacter cc;
+                ConsoleCell cc;
 
                 try {
                     cc = rows.get(y).get(x);
                 } catch (IndexOutOfBoundsException e) {
-                    cc = new ConsoleCharacter(new TextCharacter(' ', false, false), new ConsolePosition(x, y));
+                    cc = new ConsoleCell(new TextCharacter(' '), new ConsolePosition(x, y));
                 }
 
                 row.add(cc);
@@ -43,70 +49,86 @@ public class VirtualConsole implements Console {
     public void resetCharAt(ConsolePosition pos) {
         if (!running) return;
 
-        if (getConsoleSize().isValid(pos)) setCharAt(pos, ' ');
+        if (getConsoleSize().isValid(pos)) {
+            setCharAt(pos, new TextCharacter(' ', false, false));
+            updated();
+        }
     }
 
     @Override
     public void resetBackgroundAt(ConsolePosition pos) {
         if (!running) return;
 
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setBackground(Color.BLACK);
+        if (getConsoleSize().isValid(pos)) {
+            rows.get(pos.getY()).get(pos.getX()).setBackground(CharColor.ANSI.BLACK);
+            updated();
+        }
     }
 
     @Override
     public void resetForegroundAt(ConsolePosition pos) {
         if (!running) return;
 
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setForeground(Color.WHITE);
-    }
-
-    @Override
-    public void setCharAt(ConsolePosition pos, char c) {
-        if (!running) return;
-
         if (getConsoleSize().isValid(pos)) {
-            this.lastEdit = pos;
-            rows.get(pos.getY()).get(pos.getX()).setTextCharacter(new TextCharacter(c, false, false));
+            rows.get(pos.getY()).get(pos.getX()).setForeground(CharColor.ANSI.WHITE);
+            updated();
         }
     }
 
     @Override
-    public void setBackgroundAt(ConsolePosition pos, Color c) {
+    public void setCharAt(ConsolePosition pos, TextCharacter c) {
         if (!running) return;
 
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setBackground(c);
+        if (getConsoleSize().isValid(pos)) {
+            this.lastEdit = pos;
+            rows.get(pos.getY()).get(pos.getX()).setTextCharacter(c);
+            updated();
+        }
     }
 
     @Override
-    public void setForegroundAt(ConsolePosition pos, Color c) {
+    public void setBackgroundAt(ConsolePosition pos, CharColor c) {
         if (!running) return;
 
-        if (getConsoleSize().isValid(pos)) rows.get(pos.getY()).get(pos.getX()).setForeground(c);
+        if (getConsoleSize().isValid(pos)) {
+            rows.get(pos.getY()).get(pos.getX()).setBackground(c);
+            updated();
+        }
     }
 
     @Override
-    public char getCharAt(ConsolePosition pos) {
-        if (!running) return ' ';
+    public void setForegroundAt(ConsolePosition pos, CharColor c) {
+        if (!running) return;
+
+        if (getConsoleSize().isValid(pos)) {
+            rows.get(pos.getY()).get(pos.getX()).setForeground(c);
+            updated();
+        }
+    }
+
+    @Override
+    public TextCharacter getCharAt(ConsolePosition pos) {
+        if (!running) return new TextCharacter(' ', false, false);
 
         if (getConsoleSize().isValid(pos))
-            return rows.get(pos.getY()).get(pos.getX()).getTextCharacter().getCharacter();
-        return ' ';
+            return rows.get(pos.getY()).get(pos.getX()).getTextCharacter();
+        return new TextCharacter(' ', false, false);
     }
 
     @Override
-    public Color getBackgroundAt(ConsolePosition pos) {
+    public CharColor getBackgroundAt(ConsolePosition pos) {
         if (!running) return null;
 
         if (getConsoleSize().isValid(pos)) return rows.get(pos.getY()).get(pos.getX()).getBackground();
-        return Color.BLACK;
+        return CharColor.ANSI.BLACK;
     }
 
     @Override
-    public Color getForegroundAt(ConsolePosition pos) {
+    public CharColor getForegroundAt(ConsolePosition pos) {
         if (!running) return null;
 
         if (getConsoleSize().isValid(pos)) return rows.get(pos.getY()).get(pos.getX()).getForeground();
-        return Color.WHITE;
+        return CharColor.ANSI.WHITE;
     }
 
     @Override
@@ -129,6 +151,7 @@ public class VirtualConsole implements Console {
 
         this.consoleSize = size;
         updateChars();
+        updated();
     }
 
     @Override
@@ -137,11 +160,15 @@ public class VirtualConsole implements Console {
 
         this.rows.clear();
         updateChars();
+        updated();
     }
 
     @Override
     public void start() {
-        if (!stopped) this.running = true;
+        if (!stopped) {
+            this.running = true;
+            updated();
+        }
     }
 
     @Override
@@ -174,6 +201,14 @@ public class VirtualConsole implements Console {
     @Override
     public boolean isPressing(int key) {
         return false;
+    }
+
+    @Override
+    public ConsoleGraphics getConsoleGraphics() {
+        return this.graphics;
+    }
+
+    public void updated() {
     }
 
 

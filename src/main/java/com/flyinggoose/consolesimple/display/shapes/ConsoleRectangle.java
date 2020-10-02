@@ -1,7 +1,7 @@
 package com.flyinggoose.consolesimple.display.shapes;
 
-import com.flyinggoose.consolesimple.display.ConsoleCharacter;
 import com.flyinggoose.consolesimple.display.ConsolePosition;
+import com.flyinggoose.consolesimple.utils.TextCharacter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +10,15 @@ public class ConsoleRectangle implements ConsoleShape {
     private ConsolePosition pos;
     private int width;
     private int height;
-    private char fill;
-    private char topLeft;
-    private char topRight;
-    private char bottomLeft;
-    private char bottomRight;
-    private char horizontal;
-    private char vertical;
+    private TextCharacter fill;
+    private TextCharacter topLeft;
+    private TextCharacter topRight;
+    private TextCharacter bottomLeft;
+    private TextCharacter bottomRight;
+    private TextCharacter horizontal;
+    private TextCharacter vertical;
 
-    public ConsoleRectangle(ConsolePosition pos, int width, int height, char fill, char topLeft, char topRight, char bottomLeft, char bottomRight, char horizontal, char vertical) {
+    public ConsoleRectangle(ConsolePosition pos, int width, int height, TextCharacter fill, TextCharacter topLeft, TextCharacter topRight, TextCharacter bottomLeft, TextCharacter bottomRight, TextCharacter horizontal, TextCharacter vertical) {
         this.pos = pos;
         this.width = width;
         this.height = height;
@@ -127,77 +127,77 @@ public class ConsoleRectangle implements ConsoleShape {
         this.height = height;
     }
 
-    public char getFill() {
+    public TextCharacter getFill() {
         return fill;
     }
 
-    public void setFill(char fill) {
+    public void setFill(TextCharacter fill) {
         this.fill = fill;
     }
 
-    public char getTopLeft() {
+    public TextCharacter getTopLeft() {
         return topLeft;
     }
 
-    public void setTopLeft(char topLeft) {
+    public void setTopLeft(TextCharacter topLeft) {
         this.topLeft = topLeft;
     }
 
-    public char getTopRight() {
+    public TextCharacter getTopRight() {
         return topRight;
     }
 
-    public void setTopRight(char topRight) {
+    public void setTopRight(TextCharacter topRight) {
         this.topRight = topRight;
     }
 
-    public char getBottomLeft() {
+    public TextCharacter getBottomLeft() {
         return bottomLeft;
     }
 
-    public void setBottomLeft(char bottomLeft) {
+    public void setBottomLeft(TextCharacter bottomLeft) {
         this.bottomLeft = bottomLeft;
     }
 
-    public char getBottomRight() {
+    public TextCharacter getBottomRight() {
         return bottomRight;
     }
 
-    public void setBottomRight(char bottomRight) {
+    public void setBottomRight(TextCharacter bottomRight) {
         this.bottomRight = bottomRight;
     }
 
-    public char getHorizontal() {
+    public TextCharacter getHorizontal() {
         return horizontal;
     }
 
-    public void setHorizontal(char horizontal) {
+    public void setHorizontal(TextCharacter horizontal) {
         this.horizontal = horizontal;
     }
 
-    public char getVertical() {
+    public TextCharacter getVertical() {
         return vertical;
     }
 
-    public void setVertical(char vertical) {
+    public void setVertical(TextCharacter vertical) {
         this.vertical = vertical;
     }
 
     public static class Basic extends ConsoleRectangle {
-        public Basic(ConsolePosition pos, int width, int height, char fill) {
+        public Basic(ConsolePosition pos, int width, int height, TextCharacter fill) {
             super(pos, width, height, fill, fill, fill, fill, fill, fill, fill);
         }
     }
 
     public static class Box extends ConsoleRectangle {
         public Box(ConsolePosition pos, int width, int height) {
-            super(pos, width, height, ' ', ConsoleCharacter.BOX_RIGHT_DOWN, ConsoleCharacter.BOX_LEFT_DOWN, ConsoleCharacter.BOX_RIGHT_UP, ConsoleCharacter.BOX_LEFT_UP, ConsoleCharacter.BOX_HORIZONTAL, ConsoleCharacter.BOX_VERTICAL);
+            super(pos, width, height, TextCharacter.SPACE, TextCharacter.BOX_RIGHT_DOWN, TextCharacter.BOX_LEFT_DOWN, TextCharacter.BOX_RIGHT_UP, TextCharacter.BOX_LEFT_UP, TextCharacter.BOX_HORIZONTAL, TextCharacter.BOX_VERTICAL);
         }
     }
 
     public static class DoubleBox extends ConsoleRectangle {
         public DoubleBox(ConsolePosition pos, int width, int height) {
-            super(pos, width, height, ' ', ConsoleCharacter.BOX_DOUBLE_RIGHT_DOWN, ConsoleCharacter.BOX_DOUBLE_LEFT_DOWN, ConsoleCharacter.BOX_DOUBLE_RIGHT_UP, ConsoleCharacter.BOX_DOUBLE_LEFT_UP, ConsoleCharacter.BOX_DOUBLE_HORIZONTAL, ConsoleCharacter.BOX_DOUBLE_VERTICAL);
+            super(pos, width, height, TextCharacter.SPACE, TextCharacter.BOX_DOUBLE_RIGHT_DOWN, TextCharacter.BOX_DOUBLE_LEFT_DOWN, TextCharacter.BOX_DOUBLE_RIGHT_UP, TextCharacter.BOX_DOUBLE_LEFT_UP, TextCharacter.BOX_DOUBLE_HORIZONTAL, TextCharacter.BOX_DOUBLE_VERTICAL);
         }
     }
 }
